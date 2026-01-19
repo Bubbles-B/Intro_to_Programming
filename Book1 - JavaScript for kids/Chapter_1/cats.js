@@ -10,4 +10,5 @@ drawCats(10); // You can put any number here instead of 10.
 for (var i = 8; i < 11; i++) {
     console.log(i + " =^.^=");
 };
+// 
 
