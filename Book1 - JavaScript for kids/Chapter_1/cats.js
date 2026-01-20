@@ -1,5 +1,5 @@
 // Draw as many cats as you want! 
-var drawCats = function (name) {
+var drawCats = function (howManyTimes) {
     for (var i = 0; i < howManyTimes; i++) {
         console.log(i + " =^.^=");
     }
@@ -11,4 +11,5 @@ for (var i = 8; i < 11; i++) {
     console.log(i + " =^.^=");
 };
 // 
+
 
