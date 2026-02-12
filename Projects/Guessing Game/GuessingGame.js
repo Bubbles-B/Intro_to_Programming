@@ -52,7 +52,7 @@ function getGuess() {
     return parseInt(prompt("Please  guess the secret number(1-20)"));
 }
 
-let secret = Math.floor(Math.random() * 21);
+let secret = Math.floor(Math.random() * 20) + 1;
 let guess = getGuess();
 
 while (guess != secret) {
@@ -66,5 +66,6 @@ while (guess != secret) {
 
     guess = getGuess();
 }
+
 
 alert("Correct Guess! " + guess)
