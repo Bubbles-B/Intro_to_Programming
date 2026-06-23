@@ -1,0 +1,29 @@
+#myName{
+   background-color: blueviolet;
+    color: pink;
+    font-style: italic;
+    font-size: 2em;
+}
+#changeList{
+    background-color: brown;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+
+}
+
+#changeList:hover{
+    color: aqua;
+    
+}
+
+body{
+    background-color: rgba(243, 217, 217, 0.886);
+}
+
+#firstThing{
+    color: rgb(205, 22, 22);
+}
+#thirdThing{
+    color: darkgreen;
+}
