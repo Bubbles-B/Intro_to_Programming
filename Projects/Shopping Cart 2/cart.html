@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart Program</title>
+    <style>
+        :root {
+            --primary: #e0315a;
+            --primary-hover: #c12248;
+            --bg-light: #fdf2f4;
+            --border-color: #e5e7eb;
+            --text-dark: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        fieldset {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        legend {
+            font-weight: 600;
+            color: #6b7280;
+            padding: 0 10px;
+            font-size: 0.95rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        th {
+            background-color: var(--bg-light);
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            padding: 14px 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        tr:hover {
+            background-color: #fff1f3;
+        }
+
+        /* Image Cell Styles */
+        .item-cell {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .product-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 6px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            padding: 2px;
+        }
+
+        /* Action Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-add {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #059669;
+        }
+
+        .btn-remove {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-checkout {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            font-size: 1rem;
+            margin-top: 15px;
+            box-shadow: 0 2px 4px rgba(224, 49, 90, 0.2);
+        }
+
+        .btn-checkout:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Bottom Summary Bar */
+        .summary-bar {
+            background-color: #06b6d4;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <fieldset>
+            <legend>Shopping cart program</legend>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Num</th>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th style="text-align: center;">Add</th>
+                        <th style="text-align: center;">Remove</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-table-body">
+                    <!-- Data injected via JavaScript -->
+                </tbody>
+            </table>
+        </fieldset>
+
+        <button class="btn btn-checkout" onclick="checkout()">Checkout</button>
+    </div>
+
+    <script>
+        // 1. Unified State & Data (Including clean placeholders for item images)
+        const products = [
+            { num: 1, name: "Donut", price: 10.00, quantity: 0, image: "donuts.png" },
+            { num: 2, name: "Kit Kat", price: 12.99, quantity: 0, image: "Kit.png" },
+            { num: 3, name: "Bar One", price: 8.50, quantity: 0, image: "Bar.png" },
+            { num: 4, name: "Jelly Tots", price: 15.00, quantity: 0, image: "Jelly.png" },
+            { num: 5, name: "Lunch Bar", price: 10.00, quantity: 0, image: "Lunch.png" }
+        ];
+
+        const tableBody = document.getElementById('cart-table-body');
+        const grandTotalDisplay = document.getElementById('grand-total');
+
+        // 2. Render function mapping data rows cleanly
+        function renderTable() {
+            let grandTotal = 0;
+
+            tableBody.innerHTML = products.map(product => {
+                const rowTotal = product.price * product.quantity;
+                grandTotal += rowTotal;
+
+                return `
+                <tr>
+                    <td>${product.num}</td>
+                    <td>
+                        <div class="item-cell">
+                            <img src="${product.image}" alt="${product.name}" class="product-img">
+                            <strong>${product.name}</strong>
+                        </div>
+                    </td>
+                    <td>R ${product.price.toFixed(2)}</td>
+                    <td><strong>${product.quantity}</strong></td>
+                    <td>R ${rowTotal.toFixed(2)}</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-add" onclick="updateQty(${product.num}, 1)">Add</button>
+                    </td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-remove" onclick="updateQty(${product.num}, -1)">Remove</button>
+                    </td>
+                </tr>
+            `;
+            }).join('');
+
+            grandTotalDisplay.textContent = `R ${grandTotal.toFixed(2)}`;
+        }
+
+        // 3. Logic handling quantity increments/decrements safely
+        function updateQty(num, change) {
+            const item = products.find(p => p.num === num);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity < 0) item.quantity = 0; // Prevent negative calculations
+                renderTable();
+            }
+        }
+
+        function checkout() {
+            // Gather all products chosen
+            const purchasedItems = products.filter(item => item.quantity > 0);
+
+            if (purchasedItems.length === 0) {
+                alert("Your cart is empty! Add items before checking out.");
+                return;
+            }
+
+            // Populate rows with large legible spacing
+            const listContainer = document.getElementById('receipt-items-list');
+            listContainer.innerHTML = purchasedItems.map(item => `
+        <div style="display: flex; justify-content: space-between;">
+            <span>${item.name} <span style="color: #6b7280;">(x${item.quantity})</span></span>
+            <span>R ${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+    `).join('');
+
+            // Update subtotal figures
+            const finalTotal = purchasedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('receipt-final-cost').textContent = `R ${finalTotal.toFixed(2)}`;
+
+            // Bring up the clean structural modal view
+            document.getElementById('receipt-modal').showModal();
+        }
+
+        // Function to handle close actions and clear quantities back to 0 cleanly
+        function closeReceipt() {
+            document.getElementById('receipt-modal').close();
+
+            // Reset quantities to zero for a clean restart
+            products.forEach(product => product.quantity = 0);
+            renderTable();
+        }
+
+
+        // Render configuration on initial window parse
+        renderTable();
+    </script>
+
+    <!-- Clean, wide overlay pop-up layout -->
+    <dialog id="receipt-modal"
+        style="border: none; border-radius: 12px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); width: 450px; font-family: 'Courier New', Courier, monospace; background-color: #fff;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; letter-spacing: 2px; color: #1f2937;">TAX RECEIPT</h2>
+            <p style="margin: 5px 0; color: #6b7280; font-size: 0.9rem;">Thank you for your purchase!</p>
+        </div>
+
+        <div
+            style="border-top: 2px dashed #9ca3af; border-bottom: 2px dashed #9ca3af; padding: 15px 0; margin: 15px 0;">
+            <!-- Headers -->
+            <div
+                style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; color: #4b5563;">
+                <span>ITEM (QTY)</span>
+                <span>TOTAL</span>
+            </div>
+            <!-- Item rows injection area -->
+            <div id="receipt-items-list" style="font-size: 1.05rem; line-height: 2; color: #111827;"></div>
+        </div>
+
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0; font-size: 1.3rem; font-weight: bold; color: #111827;">
+            <span>TOTAL AMOUNT:</span>
+            <span id="receipt-final-cost">R 0.00</span>
+        </div>
+
+        <button onclick="closeReceipt()"
+            style="width: 100%; padding: 12px; background: #e0315a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.2s;">
+            Dismiss Receipt
+        </button>
+    </dialog>
+
+
+</body>
+
+</html>
